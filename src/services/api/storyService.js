@@ -98,7 +98,7 @@ class StoryService {
   }
 
   // Auto-save draft to local storage
-  async saveDraft(draftData) {
+async saveDraft(draftData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
@@ -115,10 +115,10 @@ class StoryService {
         }
       }, 100);
     });
-  },
+  }
 
   // Get auto-saved draft from local storage
-  async getDraft() {
+async getDraft() {
     return new Promise((resolve) => {
       setTimeout(() => {
         try {
@@ -130,10 +130,9 @@ class StoryService {
         }
       }, 100);
     });
-  },
-
+  }
   // Clear auto-saved draft from local storage
-  async clearDraft() {
+async clearDraft() {
     return new Promise((resolve) => {
       setTimeout(() => {
         try {
@@ -143,12 +142,12 @@ class StoryService {
           console.error('Error clearing draft from storage:', error);
           resolve();
         }
-}, 100);
+      }, 100);
     });
   }
 
   // Update existing story
-  async update(id, storyData) {
+async update(id, storyData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
@@ -174,7 +173,7 @@ class StoryService {
         } catch (error) {
           reject(error);
         }
-}, 300);
+      }, 300);
     });
   }
 
