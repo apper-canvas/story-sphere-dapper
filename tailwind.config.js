@@ -31,8 +31,10 @@ export default {
       },
       lineHeight: {
         'relaxed': '1.7',
-      }
+}
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
 }
