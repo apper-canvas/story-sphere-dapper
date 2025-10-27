@@ -27,9 +27,11 @@ const Explore = lazy(() => import('@/components/pages/Explore'));
 
 // Store (placeholder - will be created if Redux is implemented)
 // Configure Redux store
+import themeReducer from '@/store/slices/themeSlice';
+
 const store = configureStore({
   reducer: {
-    // Add reducers here as needed
+    theme: themeReducer
   }
 });
 
