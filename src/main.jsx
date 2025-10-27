@@ -3,6 +3,9 @@ import React, { useEffect, useState, lazy, Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
+import { RouterProvider } from "react-router-dom";
+import { configureStore } from "@reduxjs/toolkit";
+import { router } from "@/router";
 import { ToastContainer } from "react-toastify";
 import NotFound from "@/components/pages/NotFound";
 import Home from "@/components/pages/Home";
@@ -23,12 +26,12 @@ const Explore = lazy(() => import('@/components/pages/Explore'));
 // Components
 
 // Store (placeholder - will be created if Redux is implemented)
-const store = {
-  getState: () => ({}),
-  dispatch: () => {},
-  subscribe: () => () => {},
-  replaceReducer: () => {}
-};
+// Configure Redux store
+const store = configureStore({
+  reducer: {
+    // Add reducers here as needed
+  }
+});
 
 // Theme Provider Component
 const ThemeProvider = ({ children }) => {
@@ -76,24 +79,22 @@ const AppRoutes = () => (
 // Main App Component
 const App = () => (
   <React.StrictMode>
-    <Provider store={store}>
-      <BrowserRouter>
-        <ThemeProvider>
-          <AppRoutes />
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="colored"
-          />
-        </ThemeProvider>
-      </BrowserRouter>
+<Provider store={store}>
+      <ThemeProvider>
+        <RouterProvider router={router} />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="colored"
+        />
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>
 );
