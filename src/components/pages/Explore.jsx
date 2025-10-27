@@ -140,7 +140,7 @@ const Explore = () => {
           </div>
         </motion.div>
 
-        {/* Story List */}
+{/* Story List */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -148,8 +148,7 @@ const Explore = () => {
         >
           <StoryList
             filter={activeTab}
-            category={selectedCategory}
-            searchQuery={searchQuery}
+            tagId={selectedCategory}
           />
         </motion.div>
       </div>
