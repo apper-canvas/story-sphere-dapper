@@ -1,24 +1,26 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
 import '@/index.css';
+import React, { useEffect, useState, lazy, Suspense } from "react";
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { Provider } from "react-redux";
+import { ToastContainer } from "react-toastify";
+import NotFound from "@/components/pages/NotFound";
+import Home from "@/components/pages/Home";
+import Write from "@/components/pages/Write";
+import Settings from "@/components/pages/Settings";
+import Profile from "@/components/pages/Profile";
+import Bookmarks from "@/components/pages/Bookmarks";
+import TagDetail from "@/components/pages/TagDetail";
+import Analytics from "@/components/pages/Analytics";
+import Search from "@/components/pages/Search";
+import StoryDetail from "@/components/pages/StoryDetail";
+import Layout from "@/components/organisms/Layout";
 
 // Pages
-import Home from '@/components/pages/Home';
-import Write from '@/components/pages/Write';
-import StoryDetail from '@/components/pages/StoryDetail';
-import Profile from '@/components/pages/Profile';
-import Settings from '@/components/pages/Settings';
-import Search from '@/components/pages/Search';
-import TagDetail from '@/components/pages/TagDetail';
-import Bookmarks from '@/components/pages/Bookmarks';
-import Analytics from '@/components/pages/Analytics';
-import NotFound from '@/components/pages/NotFound';
+
+const Explore = lazy(() => import('@/components/pages/Explore'));
 
 // Components
-import Layout from '@/components/organisms/Layout';
 
 // Store (placeholder - will be created if Redux is implemented)
 const store = {
@@ -59,7 +61,12 @@ const AppRoutes = () => (
       <Route path="search" element={<Search />} />
       <Route path="tag/:tag" element={<TagDetail />} />
       <Route path="bookmarks" element={<Bookmarks />} />
-      <Route path="analytics" element={<Analytics />} />
+<Route path="analytics" element={<Analytics />} />
+      <Route path="explore" element={
+        <Suspense fallback={<div>Loading.....</div>}>
+          <Explore />
+        </Suspense>
+      } />
       <Route path="404" element={<NotFound />} />
       <Route path="*" element={<Navigate to="/404" replace />} />
     </Route>

@@ -1,12 +1,14 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import StoryList from "@/components/organisms/StoryList";
-import SearchBar from "@/components/molecules/SearchBar";
-import TagChip from "@/components/molecules/TagChip";
-import ApperIcon from "@/components/ApperIcon";
 import { STORY_CATEGORIES } from "@/utils/constants";
+import ApperIcon from "@/components/ApperIcon";
+import StoryList from "@/components/organisms/StoryList";
+import TagChip from "@/components/molecules/TagChip";
+import SearchBar from "@/components/molecules/SearchBar";
 
 const Home = () => {
+  const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState("trending");
   const [selectedTag, setSelectedTag] = useState(null);
 
@@ -67,9 +69,10 @@ const Home = () => {
                 Start Writing
               </motion.button>
               
-              <motion.button
+<motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/explore')}
                 className="inline-flex items-center px-8 py-4 bg-white dark:bg-slate-800 text-gray-700 dark:text-slate-200 font-semibold rounded-xl shadow-lg border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 transition-all duration-200 gap-3"
               >
                 <ApperIcon name="BookOpen" className="w-5 h-5" />

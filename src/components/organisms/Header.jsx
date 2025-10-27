@@ -56,7 +56,7 @@ const Header = () => {
             {/* Search Bar */}
             <SearchBar className="w-80" />
 
-            {/* Write Button */}
+{/* Write Button */}
             <Button
               variant="primary"
               size="sm"
@@ -65,6 +65,15 @@ const Header = () => {
             >
               Write
             </Button>
+
+            {/* Explore Button */}
+            <Link 
+              to="/explore"
+              className="flex items-center gap-2 px-4 py-2 text-gray-700 dark:text-slate-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+            >
+              <ApperIcon name="Compass" className="w-4 h-4" />
+              Explore
+            </Link>
 
             {/* Notifications */}
             <button className="relative p-2 text-gray-500 dark:text-slate-400 hover:text-gray-700 dark:hover:text-slate-200 transition-colors">
@@ -174,7 +183,7 @@ const Header = () => {
               <div className="space-y-4">
                 <SearchBar className="w-full" />
                 
-                <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
                   <Button
                     variant="primary"
                     size="sm"
@@ -184,6 +193,14 @@ const Header = () => {
                   >
                     Write Story
                   </Button>
+                  
+                  <Link
+                    to="/explore"
+                    className="flex items-center justify-center px-4 py-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors mr-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <ApperIcon name="Compass" className="w-5 h-5" />
+                  </Link>
                   
                   <ThemeToggle />
                   
@@ -215,7 +232,16 @@ const Header = () => {
                     </div>
                   </div>
 
-                  <div className="space-y-1">
+<div className="space-y-1">
+                    <Link
+                      to="/explore"
+                      className="flex items-center px-2 py-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <ApperIcon name="Compass" className="w-5 h-5 mr-3" />
+                      Explore
+                    </Link>
+                    
                     <Link
                       to={`/profile/${user.username}`}
                       className="flex items-center px-2 py-2 text-gray-700 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg transition-colors"

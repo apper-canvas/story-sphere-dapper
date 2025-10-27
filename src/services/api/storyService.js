@@ -177,22 +177,58 @@ async update(id, storyData) {
     });
   }
 
-  // Get all stories with optional filters
+// Get all stories with optional filters
   async getAll(filters = {}) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
           let stories = getStoriesFromStorage();
 
-          // Apply filters
+          // Apply status filter (default to published for explore)
           if (filters.status) {
             stories = stories.filter(s => s.status === filters.status);
+          } else if (filters.filter && filters.filter !== 'all') {
+            stories = stories.filter(s => s.status === STORY_STATUS.PUBLISHED);
           }
+          
+          // Apply category filter
           if (filters.category) {
             stories = stories.filter(s => s.category === filters.category);
           }
+          
+          // Apply author filter
           if (filters.authorId) {
             stories = stories.filter(s => s.authorId === filters.authorId);
+          }
+          
+          // Apply search query
+          if (filters.searchQuery) {
+            const query = filters.searchQuery.toLowerCase();
+            stories = stories.filter(s => 
+              s.title?.toLowerCase().includes(query) || 
+              s.content?.toLowerCase().includes(query)
+            );
+          }
+          
+          // Apply sorting
+          if (filters.filter) {
+            switch (filters.filter) {
+              case 'latest':
+                stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                break;
+              case 'popular':
+                stories.sort((a, b) => (b.likes || 0) - (a.likes || 0));
+                break;
+              case 'trending':
+                stories.sort((a, b) => {
+                  const scoreA = (a.likes || 0) + (a.views || 0) * 0.5 + (a.comments?.length || 0) * 2;
+                  const scoreB = (b.likes || 0) + (b.views || 0) * 0.5 + (b.comments?.length || 0) * 2;
+                  return scoreB - scoreA;
+                });
+                break;
+              default:
+                stories.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            }
           }
           
           resolve(stories);

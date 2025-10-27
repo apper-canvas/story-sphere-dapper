@@ -11,6 +11,8 @@ const StoryList = ({
   filter = "all",
   authorId = null,
   tagId = null,
+  category = null,
+  searchQuery = "",
   className
 }) => {
   const [stories, setStories] = useState([]);
@@ -19,7 +21,6 @@ const StoryList = ({
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
-
   const loadStories = async (pageNum = 1, append = false) => {
     try {
       if (!append) {
@@ -29,12 +30,14 @@ const StoryList = ({
         setLoadingMore(true);
       }
 
-      const params = {
+const params = {
         page: pageNum,
         limit: 10,
         filter,
         authorId,
-        tagId
+        tagId,
+        category,
+        searchQuery
       };
 
       const response = await storyService.getAll(params);
@@ -54,10 +57,10 @@ const StoryList = ({
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
     setPage(1);
     loadStories(1, false);
-  }, [filter, authorId, tagId]);
+  }, [filter, authorId, tagId, category, searchQuery]);
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
