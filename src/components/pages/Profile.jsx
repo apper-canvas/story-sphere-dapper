@@ -1,14 +1,16 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import Avatar from "@/components/atoms/Avatar";
+import toast from "react-hot-toast";
+import { userService } from "@/services/api/userService";
+import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
+import Avatar from "@/components/atoms/Avatar";
+import Write from "@/components/pages/Write";
 import StoryList from "@/components/organisms/StoryList";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/ApperIcon";
-import { formatNumber, formatDate } from "@/utils/formatters";
-import { userService } from "@/services/api/userService";
+import { formatDate, formatNumber } from "@/utils/formatters";
 
 const Profile = () => {
   const { username } = useParams();
@@ -44,7 +46,7 @@ const Profile = () => {
     loadUser();
   }, [username]);
 
-  const handleFollow = async () => {
+const handleFollow = async () => {
     try {
       const newFollowStatus = !isFollowing;
       setIsFollowing(newFollowStatus);
@@ -56,8 +58,15 @@ const Profile = () => {
         }));
       }
       
-      // Here you would call the follow/unfollow API
+      if (newFollowStatus) {
+        await userService.follow(user.Id);
+        toast.success(`You are now following ${user.name}`);
+      } else {
+        await userService.unfollow(user.Id);
+        toast.success(`You unfollowed ${user.name}`);
+      }
     } catch (error) {
+      toast.error(error.message || 'Failed to update follow status');
       // Revert on error
       setIsFollowing(!isFollowing);
       if (user) {

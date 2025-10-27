@@ -193,5 +193,5 @@ export const userService = {
   getById,
   updateProfile,
   follow,
-  unfollow,
+  unfollow
 };

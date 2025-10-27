@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import AuthorCard from "@/components/molecules/AuthorCard";
-import TagChip from "@/components/molecules/TagChip";
-import LikeButton from "@/components/molecules/LikeButton";
-import BookmarkButton from "@/components/molecules/BookmarkButton";
+import { storyService } from "@/services/api/storyService";
+import { isBookmarked } from "@/services/api/bookmarkService";
+import ApperIcon from "@/components/ApperIcon";
 import CommentSection from "@/components/organisms/CommentSection";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/ApperIcon";
+import BookmarkButton from "@/components/molecules/BookmarkButton";
+import AuthorCard from "@/components/molecules/AuthorCard";
+import TagChip from "@/components/molecules/TagChip";
+import LikeButton from "@/components/molecules/LikeButton";
 import { formatDate, formatNumber, formatReadTime } from "@/utils/formatters";
-import { storyService } from "@/services/api/storyService";
 
 const StoryDetail = () => {
   const { slug } = useParams();
@@ -18,6 +19,8 @@ const StoryDetail = () => {
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const [isReaderMode, setIsReaderMode] = useState(false);
 
   const loadStory = async () => {
@@ -26,19 +29,43 @@ const StoryDetail = () => {
       setError(null);
       const data = await storyService.getBySlug(slug);
       setStory(data);
-      
-      // Increment view count
-      await storyService.incrementView(data.id);
+      setIsFollowing(data?.author?.isFollowing || false);
     } catch (err) {
-      setError(err.message);
+      setError(err?.message || 'Failed to load story');
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    loadStory();
+    if (slug) {
+      loadStory();
+    }
   }, [slug]);
+
+const handleFollow = async (authorId) => {
+    if (followLoading || !authorId) return;
+    
+    try {
+      setFollowLoading(true);
+      const newFollowStatus = !isFollowing;
+      setIsFollowing(newFollowStatus);
+      
+      if (newFollowStatus) {
+        await userService.follow(authorId);
+        toast.success(`You are now following ${story?.author?.name || 'this author'}`);
+      } else {
+        await userService.unfollow(authorId);
+        toast.success(`You unfollowed ${story?.author?.name || 'this author'}`);
+      }
+    } catch (error) {
+      console.error('Follow toggle error:', error);
+      toast.error(error?.message || 'Failed to update follow status');
+      setIsFollowing(!isFollowing);
+    } finally {
+      setFollowLoading(false);
+    }
+  };
 
   const handleLike = async (storyId, liked) => {
     if (story) {
@@ -49,7 +76,6 @@ const StoryDetail = () => {
       }));
     }
   };
-
   const handleBookmark = async (storyId, bookmarked) => {
     if (story) {
       setStory(prev => ({
@@ -184,11 +210,14 @@ const StoryDetail = () => {
 
             {/* Author and Meta */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
-              <AuthorCard
+<AuthorCard
                 author={story.author}
                 publishDate={story.publishedAt}
                 readTime={story.readTimeMinutes}
                 variant="horizontal"
+                showFollowButton={true}
+                isFollowing={isFollowing}
+                onFollowToggle={() => handleFollow(story?.author?.id)}
               />
               
               <div className="flex items-center gap-6 text-sm text-gray-500 dark:text-slate-500">

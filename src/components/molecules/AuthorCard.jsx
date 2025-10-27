@@ -9,9 +9,11 @@ const AuthorCard = ({
   publishDate,
   readTime,
   showFollowButton = true,
+  isFollowing = false,
   variant = "horizontal",
   className,
-  onFollow
+  onFollow,
+  onFollowToggle
 }) => {
   const navigate = useNavigate();
 
@@ -19,9 +21,11 @@ const AuthorCard = ({
     navigate(`/profile/${author.username}`);
   };
 
-  const handleFollow = async () => {
-    if (onFollow) {
-      await onFollow(author.id);
+const handleFollowClick = async () => {
+    if (onFollowToggle) {
+      await onFollowToggle();
+    } else if (onFollow) {
+      await onFollow(author.Id);
     }
   };
 
@@ -61,14 +65,20 @@ const AuthorCard = ({
           </div>
         </div>
 
-        {showFollowButton && (
+{showFollowButton && (
           <Button
-            variant="outline"
+            variant={isFollowing ? "outline" : "primary"}
             size="sm"
-            onClick={handleFollow}
-            icon="UserPlus"
+            onClick={handleFollowClick}
+            icon={isFollowing ? "UserCheck" : "UserPlus"}
+            className="group"
           >
-            Follow
+            <span className={isFollowing ? "group-hover:hidden" : ""}>
+              {isFollowing ? "Following" : "Follow"}
+            </span>
+            {isFollowing && (
+              <span className="hidden group-hover:inline">Unfollow</span>
+            )}
           </Button>
         )}
       </div>
@@ -95,14 +105,22 @@ const AuthorCard = ({
             {author.name}
           </h4>
           
-          {showFollowButton && (
+{showFollowButton && (
             <Button
-              variant="ghost"
+              variant={isFollowing ? "ghost" : "ghost"}
               size="xs"
-              onClick={handleFollow}
-              className="text-xs"
+              onClick={handleFollowClick}
+              className={cn(
+                "text-xs group",
+                isFollowing && "text-primary-600 dark:text-primary-400"
+              )}
             >
-              Follow
+              <span className={isFollowing ? "group-hover:hidden" : ""}>
+                {isFollowing ? "Following" : "Follow"}
+              </span>
+              {isFollowing && (
+                <span className="hidden group-hover:inline">Unfollow</span>
+              )}
             </Button>
           )}
         </div>
