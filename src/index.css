@@ -1,0 +1,64 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'react-toastify/dist/ReactToastify.css';
+
+/* Custom toast styles */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  @apply rounded-lg font-sans;
+}
+
+.Toastify__toast--success {
+  @apply bg-primary-500 text-white;
+}
+
+.Toastify__toast--error {
+  @apply bg-red-500 text-white;
+}
+
+.Toastify__toast--info {
+  @apply bg-blue-500 text-white;
+}
+
+.Toastify__toast--warning {
+  @apply bg-yellow-500 text-white;
+}
+
+/* Rich text editor styles */
+.editor-content {
+  @apply prose prose-lg max-w-none;
+  @apply prose-headings:font-serif prose-headings:text-gray-900;
+  @apply prose-p:text-gray-800 prose-p:leading-relaxed;
+  @apply prose-a:text-primary-600 prose-a:no-underline hover:prose-a:underline;
+  @apply prose-blockquote:border-primary-200 prose-blockquote:text-gray-600;
+  @apply prose-code:text-primary-600 prose-code:bg-gray-100;
+}
+
+.dark .editor-content {
+  @apply prose-headings:text-slate-100;
+  @apply prose-p:text-slate-200;
+  @apply prose-a:text-primary-400;
+  @apply prose-blockquote:border-primary-800 prose-blockquote:text-slate-400;
+  @apply prose-code:text-primary-400 prose-code:bg-slate-800;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-slate-800;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-slate-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400 dark:bg-slate-500;
+}
