@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify";
 import { userService } from "@/services/api/userService";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
@@ -59,10 +59,10 @@ const handleFollow = async () => {
       }
       
       if (newFollowStatus) {
-        await userService.follow(user.Id);
+await userService.follow(user.id);
         toast.success(`You are now following ${user.name}`);
       } else {
-        await userService.unfollow(user.Id);
+await userService.unfollow(user.id);
         toast.success(`You unfollowed ${user.name}`);
       }
     } catch (error) {
