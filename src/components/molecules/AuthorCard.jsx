@@ -15,11 +15,12 @@ const AuthorCard = ({
   onFollow,
   onFollowToggle
 }) => {
+  const navigate = useNavigate();
+  
   // Validate author prop to prevent null/undefined access errors
   if (!author) {
     return null;
   }
-  const navigate = useNavigate();
 
   const handleAuthorClick = () => {
     navigate(`/profile/${author.username}`);
