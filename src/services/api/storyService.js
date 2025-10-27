@@ -1,6 +1,9 @@
-import { STORY_STATUS } from '@/utils/constants';
+import { STORY_STATUS } from "@/utils/constants";
+import React from "react";
+import Error from "@/components/ui/Error";
 
 const STORAGE_KEY = 'storySphere_stories';
+const DRAFT_STORAGE_KEY = 'storySphere_draft_autosave';
 
 // Helper to get all stories from localStorage
 const getStoriesFromStorage = () => {
@@ -60,7 +63,7 @@ class StoryService {
     });
   }
 
-  // Create new story
+// Create new story
   async create(storyData) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -94,6 +97,56 @@ class StoryService {
     });
   }
 
+  // Auto-save draft to local storage
+  async saveDraft(draftData) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          const draft = {
+            ...draftData,
+            updatedAt: new Date().toISOString()
+          };
+          
+          localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(draft));
+          resolve(draft);
+        } catch (error) {
+          console.error('Error saving draft to storage:', error);
+          reject(new Error('Failed to auto-save draft'));
+        }
+      }, 100);
+    });
+  },
+
+  // Get auto-saved draft from local storage
+  async getDraft() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          const data = localStorage.getItem(DRAFT_STORAGE_KEY);
+          resolve(data ? JSON.parse(data) : null);
+        } catch (error) {
+          console.error('Error reading draft from storage:', error);
+          resolve(null);
+        }
+      }, 100);
+    });
+  },
+
+  // Clear auto-saved draft from local storage
+  async clearDraft() {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        try {
+          localStorage.removeItem(DRAFT_STORAGE_KEY);
+          resolve();
+        } catch (error) {
+          console.error('Error clearing draft from storage:', error);
+          resolve();
+        }
+}, 100);
+    });
+  }
+
   // Update existing story
   async update(id, storyData) {
     return new Promise((resolve, reject) => {
@@ -121,7 +174,7 @@ class StoryService {
         } catch (error) {
           reject(error);
         }
-      }, 300);
+}, 300);
     });
   }
 

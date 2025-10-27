@@ -17,7 +17,7 @@ const Write = () => {
   const navigate = useNavigate();
   const isEditing = Boolean(storyId);
 
-  const [story, setStory] = useState({
+const [story, setStory] = useState({
     title: "",
     subtitle: "",
     content: "",
@@ -28,20 +28,43 @@ const Write = () => {
 
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [autoSaving, setAutoSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState(null);
   const [showTagSelector, setShowTagSelector] = useState(false);
   const [showPublishModal, setShowPublishModal] = useState(false);
-
   // Auto-save functionality
+// Auto-save draft every 60 seconds
   useEffect(() => {
     if (story.title || story.content) {
-      const timer = setTimeout(() => {
-        handleSave(true); // Auto-save as draft
-      }, 30000); // Auto-save every 30 seconds
+      const timer = setTimeout(async () => {
+        try {
+          setAutoSaving(true);
+          await storyService.saveDraft(story);
+          setLastSaved(new Date());
+          setAutoSaving(false);
+        } catch (error) {
+          setAutoSaving(false);
+          console.error('Auto-save failed:', error);
+        }
+      }, 60000); // Auto-save every 60 seconds
 
       return () => clearTimeout(timer);
     }
   }, [story.title, story.content]);
+
+  // Load auto-saved draft on mount
+  useEffect(() => {
+    const loadDraft = async () => {
+      const draft = await storyService.getDraft();
+      if (draft && !isEditing) {
+        setStory(draft);
+        setLastSaved(new Date(draft.updatedAt || Date.now()));
+        toast.info('Restored auto-saved draft');
+      }
+    };
+    
+    loadDraft();
+  }, []);
 
   // Load existing story for editing
   useEffect(() => {
@@ -63,7 +86,7 @@ const Write = () => {
     }
   };
 
-  const handleSave = async (isDraft = true) => {
+const handleSave = async (isDraft = true) => {
     if (!story.title.trim() && !story.content.trim()) return;
 
     try {
@@ -85,6 +108,8 @@ const Write = () => {
       setLastSaved(new Date());
       
       if (!isDraft) {
+        // Clear auto-saved draft after successful publish
+        await storyService.clearDraft();
         toast.success("Story published successfully!");
         navigate(`/story/${savedStory.slug}`);
       } else {
@@ -169,9 +194,16 @@ const Write = () => {
                 <h1 className="text-xl font-semibold text-gray-900 dark:text-slate-100">
                   {isEditing ? "Edit Story" : "Write New Story"}
                 </h1>
-                {lastSaved && (
+{(lastSaved || autoSaving) && (
                   <p className="text-sm text-gray-500 dark:text-slate-500">
-                    Last saved: {lastSaved.toLocaleTimeString()}
+                    {autoSaving ? (
+                      <span className="flex items-center gap-2">
+                        <ApperIcon name="Loader2" size={14} className="animate-spin" />
+                        Auto-saving...
+                      </span>
+                    ) : (
+                      `All changes saved at ${lastSaved.toLocaleTimeString()}`
+                    )}
                   </p>
                 )}
               </div>
@@ -180,8 +212,9 @@ const Write = () => {
             <div className="flex items-center gap-3">
               <Button
                 variant="ghost"
-                onClick={() => handleSave(true)}
+onClick={() => handleSave(true)}
                 loading={saving}
+                disabled={autoSaving}
                 icon="Save"
               >
                 Save Draft
